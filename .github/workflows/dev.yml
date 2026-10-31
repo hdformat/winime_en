@@ -1,0 +1,55 @@
+name: Dev build
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Test
+        shell: pwsh
+        run: |
+          cargo test --locked
+          if ($LASTEXITCODE -ne 0) { throw 'Cargo tests failed' }
+
+      - name: Compute dev version
+        shell: pwsh
+        run: |
+          $match = Select-String -Path Cargo.toml -Pattern '^version\s*=\s*"([^"]+)"'
+          if (-not $match) { throw 'Package version not found in Cargo.toml' }
+          $base = $match.Matches[0].Groups[1].Value
+          $version = "$base.$env:GITHUB_RUN_NUMBER"
+          Add-Content $env:GITHUB_ENV "version=$version" -Encoding utf8
+
+      - name: Build installer
+        shell: pwsh
+        run: ./scripts/build-installer.ps1 -Version $env:version -Channel dev
+
+      - name: Record SHA-256
+        shell: pwsh
+        run: |
+          $installers = @(Get-ChildItem dist/winime_en-Setup-*.exe)
+          if ($installers.Count -ne 1) { throw 'Expected exactly one installer' }
+          $hash = (Get-FileHash $installers[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  $($installers[0].Name)" | Set-Content dist/SHA256SUMS.txt -Encoding ascii
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: winime_en-dev-installer
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            dist/winime_en-Setup-*.exe
+            dist/SHA256SUMS.txt

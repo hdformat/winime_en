@@ -7,3 +7,6 @@
 
 # rust
 target
+
+# build output
+dist
