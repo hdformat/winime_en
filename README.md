@@ -8,6 +8,12 @@ winime_en
 
 ## 설치
 
+### 인스톨러
+
+[Releases](https://github.com/hdformat/winime_en/releases)에서 `winime_en-Setup-<version>.exe`를 다운로드하여 실행합니다.
+
+### 소스 빌드
+
 **Windows 환경에서만 빌드 가능합니다.**
 
 ```pwsh
