@@ -12,6 +12,16 @@ winime_en
 
 [Releases](https://github.com/hdformat/winime_en/releases)에서 `winime_en-Setup-<version>.exe`를 다운로드하여 실행합니다.
 
+### 설치 경고에 대하여
+
+인스톨러는 코드 서명이 되어 있지 않아 Windows SmartScreen 경고가 표시될 수 있습니다. '추가 정보' → '실행'으로 진행할 수 있습니다.
+
+인스톨러는 공개된 소스에서 GitHub Actions로 빌드되며, 무결성은 릴리즈에 포함된 SHA256SUMS.txt와 비교해 확인할 수 있습니다.
+
+```pwsh
+PS > Get-FileHash .\winime_en-Setup-<version>.exe -Algorithm SHA256
+```
+
 ### 소스 빌드
 
 **Windows 환경에서만 빌드 가능합니다.**
