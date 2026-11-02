@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - develop
+    paths:
+      - 'src/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'installer/**'
+      - 'scripts/**'
+      - '.github/workflows/dev.yml'
   workflow_dispatch:
 
 permissions:
